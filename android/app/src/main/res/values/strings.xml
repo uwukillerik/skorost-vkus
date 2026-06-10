@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Скорость &amp; Вкус</string>
+    <string name="title_activity_main">Скорость &amp; Вкус</string>
+    <string name="package_name">ru.skorostvkus.app</string>
+    <string name="custom_url_scheme">ru.skorostvkus.app</string>
+</resources>

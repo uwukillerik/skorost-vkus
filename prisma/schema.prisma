@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CARD
+  SBP
+  CASH
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum DeliveryType {
+  DELIVERY
+  PICKUP
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  name           String
+  phone          String?
+  avatarUrl      String?
+  role           Role     @default(USER)
+  loyaltyPoints  Int      @default(0)
+  referralCode   String?  @unique
+  referredById   String?
+  referralCount  Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  orders              Order[]
+  pushSubscriptions   PushSubscription[]
+  referredBy          User?    @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals           User[]   @relation("Referrals")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  emoji       String    @default("🍔")
+  description String?
+  imageUrl    String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  categoryId  String
+  name        String
+  slug        String   @unique
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  imageUrl    String
+  isAvailable Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  calories    Int?
+  protein     Int?
+  weightGrams Int?
+  ingredients String?
+  allergens   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  orderItems  OrderItem[]
+  comboItems  ComboItem[]
+}
+
+model Combo {
+  id          String      @id @default(cuid())
+  name        String
+  slug        String      @unique
+  description String
+  price       Decimal     @db.Decimal(10, 2)
+  oldPrice    Decimal?    @db.Decimal(10, 2)
+  imageUrl    String
+  badge       String?
+  calories    Int?
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  items       ComboItem[]
+  orderItems  OrderItem[]
+}
+
+model ComboItem {
+  id        String   @id @default(cuid())
+  comboId   String
+  productId String?
+  name      String
+  quantity  Int      @default(1)
+  combo     Combo    @relation(fields: [comboId], references: [id], onDelete: Cascade)
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+model Order {
+  id               String      @id @default(cuid())
+  userId           String?
+  guestName        String?
+  guestPhone       String?
+  guestEmail       String?
+  guestAccessToken String?     @unique
+  address          String
+  comment          String?
+  deliveryType     DeliveryType  @default(DELIVERY)
+  paymentMethod    PaymentMethod?
+  paymentStatus    PaymentStatus @default(PENDING)
+  paymentId        String?
+  subtotal         Decimal       @db.Decimal(10, 2) @default(0)
+  deliveryFee      Decimal       @db.Decimal(10, 2) @default(0)
+  status           OrderStatus   @default(NEW)
+  totalAmount           Decimal       @db.Decimal(10, 2)
+  loyaltyPointsAwarded  Boolean       @default(false)
+  pickupAt              DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  user                  User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items                 OrderItem[]
+  pushSubscriptions     PushSubscription[]
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  productId   String
+  comboId     String?
+  quantity    Int
+  unitPrice   Decimal @db.Decimal(10, 2)
+  productName String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  combo       Combo?  @relation(fields: [comboId], references: [id], onDelete: SetNull)
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String?
+  orderId   String?
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}

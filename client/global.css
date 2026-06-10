@@ -1,0 +1,243 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 32 40% 97%;
+    --foreground: 24 30% 12%;
+
+    --card: 35 50% 99%;
+    --card-foreground: 24 30% 12%;
+
+    --popover: 35 50% 99%;
+    --popover-foreground: 24 30% 12%;
+
+    --primary: 18 82% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 24 32% 16%;
+    --secondary-foreground: 35 40% 96%;
+
+    --muted: 32 28% 92%;
+    --muted-foreground: 24 12% 42%;
+
+    --accent: 38 92% 52%;
+    --accent-foreground: 24 35% 12%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 5 78% 48%;
+
+    --radius: 0.75rem;
+
+    --bottom-nav-h: 3.5rem;
+    --header-h: 3.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 0 0% 8%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 16 100% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 271 76% 53%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 25%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 39 92% 50%;
+    --accent-foreground: 0 0% 8%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 16 100% 52%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  html {
+    font-family: "Poppins", sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground overflow-x-hidden;
+    min-height: 100dvh;
+  }
+
+  #root {
+    @apply min-h-dvh overflow-x-hidden;
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 sm:px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-orange-600 transition-all duration-200 shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply px-6 sm:px-8 py-3 bg-secondary text-secondary-foreground font-semibold rounded-lg hover:bg-secondary/90 transition-all duration-200 shadow-lg;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .section-title {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight;
+  }
+
+  .card-shadow {
+    @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
+  }
+
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* Отступ под нижнюю навигацию + safe area (iPhone) */
+  .page-with-bottom-nav {
+    padding-bottom: calc(
+      var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px) + 1rem
+    );
+  }
+
+  @media (min-width: 768px) {
+    .page-with-bottom-nav {
+      padding-bottom: 0;
+    }
+  }
+
+  .page-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 min-w-0;
+  }
+
+  /* Сетка товаров: одна колонка на узких телефонах */
+  .product-grid {
+    @apply grid gap-4 sm:gap-6;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 480px) {
+    .product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .product-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .product-grid-home {
+    @apply grid gap-3 sm:gap-4;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 480px) {
+    .product-grid-home {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .product-grid-home {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .page-section {
+    @apply py-6 sm:py-8 md:py-10;
+  }
+
+  .font-display {
+    font-family: "Bebas Neue", "Poppins", sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  .bk-pattern {
+    background-color: hsl(var(--secondary));
+    background-image: radial-gradient(
+      circle at 20% 50%,
+      hsl(var(--primary) / 0.15) 0%,
+      transparent 50%
+    );
+  }
+
+  .hero-mesh {
+    background-color: hsl(24 32% 14%);
+    background-image:
+      radial-gradient(ellipse 80% 60% at 10% 20%, hsl(18 82% 48% / 0.45), transparent),
+      radial-gradient(ellipse 60% 50% at 90% 80%, hsl(38 92% 52% / 0.25), transparent),
+      radial-gradient(ellipse 40% 40% at 70% 10%, hsl(32 60% 30% / 0.4), transparent);
+  }
+
+  .warm-card {
+    @apply bg-card border border-border/60 shadow-[0_4px_24px_-4px_hsl(24_30%_12%_/_0.08)] rounded-xl sm:rounded-2xl min-w-0;
+  }
+
+  .text-gradient-brand {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-orange-500 to-amber-500;
+  }
+
+  .mobile-btn-row {
+    @apply grid grid-cols-2 gap-2 w-full sm:flex sm:w-auto sm:flex-col sm:gap-1.5;
+  }
+}

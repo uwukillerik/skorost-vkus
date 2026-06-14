@@ -1,12 +1,18 @@
 import { getMediaOrigin, isNativeApp } from "@/lib/api-base";
+import { BRAND_LOGO_URL, IMAGE_PLACEHOLDER_URL } from "@/lib/brand-assets";
 
-const PLACEHOLDER = "/placeholder.svg";
+const LEGACY_LOGO_PATHS = new Set(["/Logo.png", "Logo.png", "./Logo.png"]);
 
 /**
- * URL файла из bundle (Logo.png, placeholder.svg).
- * В APK на /menu путь ./Logo.png ломается — нужен origin + /Logo.png.
+ * URL файла из bundle (через Vite import — надёжно в APK).
  */
 export function resolveAssetUrl(path: string): string {
+  if (LEGACY_LOGO_PATHS.has(path) || path.endsWith("/Logo.png")) {
+    return BRAND_LOGO_URL;
+  }
+  if (path === "/placeholder.svg" || path.endsWith("/placeholder.svg")) {
+    return IMAGE_PLACEHOLDER_URL;
+  }
   if (!path.startsWith("/")) return path;
   if (typeof window !== "undefined") {
     return new URL(path, window.location.origin).href;
@@ -14,7 +20,6 @@ export function resolveAssetUrl(path: string): string {
   return path;
 }
 
-/** Пути с сервера — uploads и аватары */
 function isServerMediaPath(path: string): boolean {
   return (
     path.startsWith("/uploads/") ||
@@ -27,18 +32,14 @@ function isExternalHttpUrl(url: string): boolean {
   return url.startsWith("http://") || url.startsWith("https://");
 }
 
-/** В APK внешние картинки через сервер (fallback если прямой URL не открылся) */
 export function proxyExternalImage(url: string): string {
   const origin = getMediaOrigin();
   if (!origin) return url;
   return `${origin}/api/proxy-image?url=${encodeURIComponent(url)}`;
 }
 
-/**
- * URL для <img>: серверные /uploads, внешние https, локальные из bundle.
- */
 export function resolveMediaUrl(url: string | null | undefined): string {
-  if (!url?.trim()) return resolveAssetUrl(PLACEHOLDER);
+  if (!url?.trim()) return IMAGE_PLACEHOLDER_URL;
 
   const trimmed = url.trim();
 
@@ -46,7 +47,18 @@ export function resolveMediaUrl(url: string | null | undefined): string {
     return trimmed;
   }
 
+  if (LEGACY_LOGO_PATHS.has(trimmed) || trimmed.endsWith("/Logo.png")) {
+    return BRAND_LOGO_URL;
+  }
+
   if (isExternalHttpUrl(trimmed)) {
+    if (isNativeApp()) {
+      const origin = getMediaOrigin();
+      if (origin && trimmed.startsWith(origin)) {
+        return trimmed;
+      }
+      return proxyExternalImage(trimmed);
+    }
     return trimmed;
   }
 
@@ -60,26 +72,20 @@ export function resolveMediaUrl(url: string | null | undefined): string {
   return resolveAssetUrl(path);
 }
 
-/** Повторная попытка загрузки картинки в APK */
 export function resolveMediaUrlFallback(
   original: string,
   failedUrl: string,
 ): string | null {
   const trimmed = original.trim();
 
-  if (isNativeApp()) {
-    if (isExternalHttpUrl(trimmed) && !failedUrl.includes("/api/proxy-image")) {
+  if (isNativeApp() && isExternalHttpUrl(trimmed)) {
+    if (!failedUrl.includes("/api/proxy-image")) {
       return proxyExternalImage(trimmed);
-    }
-    const path = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
-    if (isServerMediaPath(path) && !failedUrl.startsWith(getMediaOrigin())) {
-      const origin = getMediaOrigin();
-      if (origin) return `${origin}${path}`;
     }
   }
 
-  if (failedUrl !== resolveAssetUrl(PLACEHOLDER)) {
-    return resolveAssetUrl(PLACEHOLDER);
+  if (failedUrl !== IMAGE_PLACEHOLDER_URL) {
+    return IMAGE_PLACEHOLDER_URL;
   }
 
   return null;

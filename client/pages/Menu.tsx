@@ -6,6 +6,7 @@ import { CategoryGrid } from "@/components/CategoryGrid";
 import { ProductCard } from "@/components/ProductCard";
 import { ComboCard } from "@/components/ComboCard";
 import { SafeImage } from "@/components/SafeImage";
+import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 import { MenuLoadError } from "@/components/ApiErrorBanner";
 import { useCategories, useProducts, useCombos } from "@/hooks/use-menu";
 import { Link } from "react-router-dom";
@@ -55,7 +56,7 @@ export default function Menu() {
       <div className="hero-mesh text-white pt-6 pb-6 sm:pt-8 sm:pb-8">
         <div className="page-container flex items-center gap-3 sm:gap-4">
           <SafeImage
-            src="/Logo.png"
+            src={BRAND_LOGO_URL}
             alt=""
             className="h-12 w-12 rounded-xl bg-white/95 p-1 object-contain shadow-lg shrink-0"
           />

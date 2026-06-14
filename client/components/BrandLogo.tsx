@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { SafeImage } from "@/components/SafeImage";
+import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 
 interface BrandLogoProps {
   className?: string;
@@ -25,7 +26,7 @@ export function BrandLogo({
   return (
     <Link to="/" className={cn("flex items-center gap-2 min-w-0 group", className)}>
       <SafeImage
-        src="/Logo.png"
+        src={BRAND_LOGO_URL}
         alt="Скорость и Вкус"
         className={cn(
           "rounded-xl object-contain drop-shadow-md transition-transform group-hover:scale-105 shrink-0",

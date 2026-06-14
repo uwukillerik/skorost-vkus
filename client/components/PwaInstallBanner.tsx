@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
 import { SafeImage } from "@/components/SafeImage";
+import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -72,7 +73,7 @@ export function PwaInstallBanner({ className }: { className?: string }) {
         <X className="h-4 w-4" />
       </button>
       <div className="flex gap-3 pr-6">
-        <SafeImage src="/Logo.png" alt="" className="h-12 w-12 rounded-xl object-contain shrink-0" />
+        <SafeImage src={BRAND_LOGO_URL} alt="" className="h-12 w-12 rounded-xl object-contain shrink-0" />
         <div>
           <p className="font-bold text-sm">Установить приложение</p>
           <p className="text-xs text-muted-foreground mt-0.5">

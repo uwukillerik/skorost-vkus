@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/SafeImage";
-import { resolveAssetUrl } from "@/lib/media-url";
+import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 
 export function PromoBanner() {
-  const logoBg = resolveAssetUrl("/Logo.png");
+  const logoBg = BRAND_LOGO_URL;
 
   return (
     <section className="relative overflow-hidden hero-mesh text-white rounded-2xl sm:rounded-3xl mx-4 sm:mx-5 lg:mx-6 shadow-lg sm:shadow-2xl">
@@ -25,7 +25,7 @@ export function PromoBanner() {
             </div>
             <div className="flex flex-col items-center lg:items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
               <SafeImage
-                src="/Logo.png"
+                src={BRAND_LOGO_URL}
                 alt="Скорость и Вкус"
                 className="h-16 w-16 sm:h-24 sm:w-24 rounded-2xl object-contain bg-white/95 p-1.5 sm:p-2 shadow-xl"
               />

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { QuickActions } from "@/components/home/QuickActions";
 import { SafeImage } from "@/components/SafeImage";
+import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 import {
   Clock,
   Heart,
@@ -195,7 +196,7 @@ export default function Index() {
         <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-primary via-orange-500 to-amber-500 p-6 sm:p-12 text-center text-white shadow-xl">
           <div className="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-white/10 blur-2xl" />
           <SafeImage
-            src="/Logo.png"
+            src={BRAND_LOGO_URL}
             alt=""
             className="h-14 w-14 mx-auto mb-4 rounded-xl bg-white/90 p-1.5 object-contain"
           />

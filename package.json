@@ -21,7 +21,7 @@
     "android:open": "npx cap open android",
     "android:apk": "npm run cap:sync && cd android && gradlew.bat assembleDebug && cd .. && node scripts/copy-apk.mjs",
     "android:apk:quick": "cd android && gradlew.bat assembleDebug && cd .. && node scripts/copy-apk.mjs",
-    "android:apk:release": "npm run cap:sync && cd android && gradlew.bat assembleRelease && cd .. && node scripts/copy-apk.mjs release"
+    "android:apk:release": "node scripts/android-release.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true">
+    <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <certificates src="system" />
             <certificates src="user" />
         </trust-anchors>
     </base-config>
-    <domain-config cleartextTrafficPermitted="true">
+
+    <!-- Самоподписанный сертификат с сервера (scripts/fetch-server-cert.mjs) -->
+    <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">77.50.193.34</domain>
         <domain includeSubdomains="true">skorostivkus.ru</domain>
+        <trust-anchors>
+            <certificates src="@raw/skorost_server" />
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+
+    <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">10.0.2.2</domain>
     </domain-config>

@@ -11,10 +11,7 @@ export function MobileBottomNav() {
   const { isAuthenticated, user } = useAuth();
 
   const hideOn =
-    location.pathname.startsWith("/admin") ||
-    location.pathname === "/checkout" ||
-    location.pathname.startsWith("/login") ||
-    location.pathname.startsWith("/register");
+    location.pathname.startsWith("/admin") || location.pathname === "/checkout";
 
   if (hideOn) return null;
 
@@ -29,7 +26,7 @@ export function MobileBottomNav() {
       className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-border/70 bg-card/98 backdrop-blur-lg safe-area-pb"
       aria-label="Основная навигация"
     >
-      <div className="flex items-stretch justify-around h-14 max-w-lg mx-auto px-0.5 pt-0.5">
+      <div className="flex items-stretch justify-around h-14 max-w-lg mx-auto px-1 pt-1">
         {visibleLinks.map((link) => {
           const active =
             link.to === "/"
@@ -37,7 +34,10 @@ export function MobileBottomNav() {
               : link.to === "/orders"
                 ? location.pathname.startsWith("/orders") ||
                   location.pathname.startsWith("/order/")
-                : location.pathname.startsWith(link.to);
+                : link.to === "/login"
+                  ? location.pathname.startsWith("/login") ||
+                    location.pathname.startsWith("/register")
+                  : location.pathname.startsWith(link.to);
           const Icon = link.icon;
           const isCart = link.emphasis;
 

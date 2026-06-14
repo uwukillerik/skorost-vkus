@@ -25,13 +25,11 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { MobileNavSheet } from "@/components/MobileNavSheet";
 import { AndroidAppDownload } from "@/components/AndroidAppDownload";
 import { PwaInstallBanner } from "@/components/PwaInstallBanner";
 import { LEGAL_LINKS } from "@/lib/legal-content";
 import { cn } from "@/lib/utils";
-import { Smartphone, Download } from "lucide-react";
-
-const APK_URL = "/downloads/skorost-vkus.apk";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -45,7 +43,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-background bg-[radial-gradient(ellipse_at_top,hsl(32_40%_94%),transparent_55%)]">
-      <header className="sticky top-0 z-50 bg-card/92 backdrop-blur-lg border-b border-border/50 shadow-sm">
+      <header className="sticky top-0 z-50 bg-card/92 backdrop-blur-lg border-b border-border/50 shadow-sm safe-area-pt">
         <nav className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16 gap-1.5 sm:gap-2">
             <BrandLogo size="md" />
@@ -166,79 +164,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {mobileMenuOpen && (
-            <div className="lg:hidden pb-4 border-t border-border/50 pt-3 space-y-1 animate-in slide-in-from-top-2">
-              {mainNavLinks.map((link) => {
-                const Icon = link.icon;
-                const active = isActive(link.to);
-                return (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className={cn(
-                      "flex items-center gap-3 py-2.5 px-4 rounded-xl font-semibold",
-                      active
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted",
-                    )}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Icon className="h-5 w-5" />
-                    {link.label}
-                  </Link>
-                );
-              })}
-              <Link
-                to="/cart"
-                className="flex items-center gap-3 py-2.5 px-4 rounded-xl font-semibold hover:bg-muted"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <ShoppingBag className="h-5 w-5" />
-                Корзина {itemCount > 0 ? `(${itemCount})` : ""}
-              </Link>
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/orders"
-                    className="flex items-center gap-3 py-2.5 px-4 rounded-xl font-semibold hover:bg-muted"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <ClipboardList className="h-5 w-5" />
-                    Мои заказы
-                  </Link>
-                  <Link
-                    to="/profile"
-                    className="flex items-center gap-3 py-2.5 px-4 rounded-xl font-semibold hover:bg-muted"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <User className="h-5 w-5" />
-                    Профиль
-                  </Link>
-                </>
-              ) : (
-                <Link
-                  to="/login"
-                  className="flex items-center gap-3 py-2.5 px-4 rounded-xl font-semibold bg-primary/10 text-primary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <User className="h-5 w-5" />
-                  Войти
-                </Link>
-              )}
-              <a
-                href={APK_URL}
-                download="skorost-vkus.apk"
-                className="flex items-center gap-3 py-2.5 px-4 rounded-xl font-semibold bg-[#3DDC84]/15 text-[#1a6b3a] border border-[#3DDC84]/30"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Smartphone className="h-5 w-5" />
-                Скачать APK (Android)
-                <Download className="h-4 w-4 ml-auto opacity-70" />
-              </a>
-            </div>
-          )}
         </nav>
       </header>
+
+      <MobileNavSheet
+        open={mobileMenuOpen}
+        onOpenChange={setMobileMenuOpen}
+        activePath={location.pathname}
+      />
 
       <main className="page-with-bottom-nav min-w-0 w-full">{children}</main>
 

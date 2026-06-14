@@ -33,6 +33,8 @@ import AdminOrderDetail from "./pages/admin/OrderDetail";
 import LegalDocument from "./pages/legal/LegalDocument";
 import { useScrollToTopOnNavigate } from "@/hooks/use-scroll-to-top";
 import { useEffect } from "react";
+import { Capacitor } from "@capacitor/core";
+import { initNativeApp } from "@/lib/capacitor-init";
 
 const queryClient = new QueryClient();
 
@@ -145,7 +147,8 @@ function AppRoutes() {
 
 function PwaBootstrap() {
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
+    initNativeApp();
+    if (!Capacitor.isNativePlatform() && "serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {});
     }
   }, []);

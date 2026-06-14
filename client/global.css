@@ -39,6 +39,8 @@
 
     --bottom-nav-h: 3.5rem;
     --header-h: 3.5rem;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -149,6 +151,20 @@
 
   .safe-area-pt {
     padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  html.capacitor-native {
+    --safe-top: max(env(safe-area-inset-top, 0px), 24px);
+  }
+
+  html.capacitor-native .safe-area-pt {
+    padding-top: var(--safe-top);
+  }
+
+  html.capacitor-native .page-with-bottom-nav {
+    padding-bottom: calc(
+      var(--bottom-nav-h) + max(env(safe-area-inset-bottom, 0px), 8px) + 1rem
+    );
   }
 
   /* Отступ под нижнюю навигацию + safe area (iPhone) */

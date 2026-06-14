@@ -26,11 +26,13 @@ export const mainNavLinks: NavItem[] = [
   { to: "/contact", label: "Контакты", icon: Phone },
 ];
 
+/** Пять пунктов на мобильном: гость — О нас, пользователь — Заказы */
 export const bottomNavLinks: NavItem[] = [
   { to: "/", label: "Главная", icon: Home },
   { to: "/menu", label: "Меню", icon: UtensilsCrossed },
   { to: "/cart", label: "Корзина", icon: ShoppingBag, showBadge: true, emphasis: true },
   { to: "/orders", label: "Заказы", icon: ClipboardList, auth: true },
+  { to: "/about", label: "О нас", icon: Info, auth: false },
   { to: "/profile", label: "Профиль", icon: User, auth: true },
   { to: "/login", label: "Войти", icon: LogIn, auth: false },
 ];

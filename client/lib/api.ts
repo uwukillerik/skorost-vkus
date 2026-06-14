@@ -23,28 +23,41 @@ async function request<T>(
   path: string,
   options?: RequestInit,
 ): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    ...options,
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const details = data.details as Record<string, string[] | undefined> | undefined;
-    const detailText = details
-      ? Object.values(details)
-          .flat()
-          .filter((line): line is string => Boolean(line))
-          .join(". ")
-      : "";
-    const message =
-      detailText || data.error || `Ошибка ${res.status}`;
-    throw new Error(message);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20_000);
+
+  try {
+    const res = await fetch(`${BASE}${path}`, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      ...options,
+      signal: options?.signal ?? controller.signal,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const details = data.details as Record<string, string[] | undefined> | undefined;
+      const detailText = details
+        ? Object.values(details)
+            .flat()
+            .filter((line): line is string => Boolean(line))
+            .join(". ")
+        : "";
+      const message =
+        detailText || data.error || `Ошибка ${res.status}`;
+      throw new Error(message);
+    }
+    return data as T;
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      throw new Error("Сервер не отвечает. Проверьте интернет и попробуйте снова.");
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeout);
   }
-  return data as T;
 }
 
 export const api = {

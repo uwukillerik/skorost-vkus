@@ -15,10 +15,16 @@ export async function initNativeApp(): Promise<void> {
     // StatusBar plugin may be unavailable in some WebView builds
   }
 
-  // Прогрев соединения с API при старте
+  // Проверка связи с API (после ssl-skip plugin в MainActivity)
   try {
-    await fetch(`${getApiBase()}/ping`, { credentials: "include" });
-  } catch {
-    // Ошибка покажется при загрузке меню
+    const res = await fetch(`${getApiBase()}/ping`, {
+      credentials: "include",
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      console.error("[native] API ping failed:", res.status);
+    }
+  } catch (err) {
+    console.error("[native] API unreachable:", err);
   }
 }

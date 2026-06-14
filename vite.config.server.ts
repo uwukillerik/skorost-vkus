@@ -3,6 +3,10 @@ import path from "node:path";
 
 // Server build configuration
 export default defineConfig({
+  ssr: {
+    // Bundle zod so production does not depend on node_modules/zod/index.js on the server
+    noExternal: ["zod"],
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "server/node-build.ts"),

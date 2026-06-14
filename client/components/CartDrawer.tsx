@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/context/CartContext";
 import { CartComboDetails, CartItemDetails } from "@/components/cart/CartLineDetails";
+import { SafeImage } from "@/components/SafeImage";
 import { unitPriceWithCustomization } from "@/lib/product-customization";
 
 interface CartDrawerProps {
@@ -65,7 +66,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                   key={c.lineId}
                   className="flex gap-3 p-2 rounded-xl bg-primary/5 border border-primary/20"
                 >
-                  <img
+                  <SafeImage
                     src={c.combo.imageUrl}
                     alt=""
                     className="w-16 h-16 rounded-lg object-cover shrink-0"
@@ -119,7 +120,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                 );
                 return (
                   <div key={item.lineId} className="flex gap-3">
-                    <img
+                    <SafeImage
                       src={item.product.imageUrl}
                       alt=""
                       className="w-16 h-16 rounded-lg object-cover shrink-0"

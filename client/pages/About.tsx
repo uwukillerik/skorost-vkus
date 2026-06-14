@@ -1,5 +1,4 @@
 import Layout from "@/components/Layout";
-import { AndroidAppDownload } from "@/components/AndroidAppDownload";
 import { Flame, Heart, Users, Award } from "lucide-react";
 
 export default function About() {
@@ -63,8 +62,6 @@ export default function About() {
             </div>
           ))}
         </div>
-
-        <AndroidAppDownload className="mb-8" />
 
         <div className="bg-primary text-primary-foreground rounded-2xl p-8 text-center">
           <h3 className="text-2xl font-bold mb-2">Присоединяйтесь к нам</h3>

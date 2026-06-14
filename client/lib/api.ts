@@ -17,8 +17,6 @@ import type {
 
 import { getApiBase } from "@/lib/api-base";
 
-const BASE = getApiBase();
-
 async function request<T>(
   path: string,
   options?: RequestInit,
@@ -27,7 +25,7 @@ async function request<T>(
   const timeout = setTimeout(() => controller.abort(), 20_000);
 
   try {
-    const res = await fetch(`${BASE}${path}`, {
+    const res = await fetch(`${getApiBase()}${path}`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",

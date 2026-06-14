@@ -5,6 +5,8 @@ import { CategoryStrip } from "@/components/CategoryStrip";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { ProductCard } from "@/components/ProductCard";
 import { ComboCard } from "@/components/ComboCard";
+import { SafeImage } from "@/components/SafeImage";
+import { MenuLoadError } from "@/components/ApiErrorBanner";
 import { useCategories, useProducts, useCombos } from "@/hooks/use-menu";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,8 +15,12 @@ import { Sparkles } from "lucide-react";
 
 export default function Menu() {
   const location = useLocation();
-  const { data: categories = [], isLoading: catLoading } = useCategories();
-  const { data: combos = [], isLoading: combosLoading } = useCombos();
+  const categoriesQuery = useCategories();
+  const combosQuery = useCombos();
+  const categories = categoriesQuery.data ?? [];
+  const catLoading = categoriesQuery.isLoading;
+  const combos = combosQuery.data ?? [];
+  const combosLoading = combosQuery.isLoading;
   const { data: catalog = [] } = useProducts();
   const hashSlug = location.hash.replace("#", "");
   const [activeSlug, setActiveSlug] = useState(hashSlug || "combos");
@@ -33,11 +39,22 @@ export default function Menu() {
     ...categories,
   ];
 
+  const menuLoadFailed =
+    categoriesQuery.isError &&
+    combosQuery.isError &&
+    !catLoading &&
+    !combosLoading;
+
+  const retryMenu = () => {
+    categoriesQuery.refetch();
+    combosQuery.refetch();
+  };
+
   return (
     <Layout>
       <div className="hero-mesh text-white pt-6 pb-6 sm:pt-8 sm:pb-8">
         <div className="page-container flex items-center gap-3 sm:gap-4">
-          <img
+          <SafeImage
             src="/Logo.png"
             alt=""
             className="h-12 w-12 rounded-xl bg-white/95 p-1 object-contain shadow-lg shrink-0"
@@ -51,6 +68,10 @@ export default function Menu() {
         </div>
       </div>
 
+      {menuLoadFailed ? (
+        <MenuLoadError onRetry={retryMenu} />
+      ) : (
+        <>
       <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 py-4">
         {catLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -153,6 +174,8 @@ export default function Menu() {
           </Button>
         </div>
       </div>
+        </>
+      )}
     </Layout>
   );
 }

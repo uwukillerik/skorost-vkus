@@ -8,7 +8,6 @@ import { ComboCard } from "@/components/ComboCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { QuickActions } from "@/components/home/QuickActions";
-import { AndroidAppDownload } from "@/components/AndroidAppDownload";
 import {
   Clock,
   Heart,
@@ -58,10 +57,6 @@ export default function Index() {
         <PromoBanner />
         <QuickActions />
       </div>
-
-      <section className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 pb-6">
-        <AndroidAppDownload />
-      </section>
 
       <section className="page-container py-8 sm:py-12 hidden sm:block">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-5">

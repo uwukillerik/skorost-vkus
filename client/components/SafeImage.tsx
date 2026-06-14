@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 const FALLBACK = "/placeholder.svg";
 
@@ -16,7 +17,12 @@ export function SafeImage({
   className,
   fallback = FALLBACK,
 }: SafeImageProps) {
-  const [current, setCurrent] = useState(src);
+  const resolved = resolveMediaUrl(src);
+  const [current, setCurrent] = useState(resolved);
+
+  useEffect(() => {
+    setCurrent(resolveMediaUrl(src));
+  }, [src]);
 
   return (
     <img

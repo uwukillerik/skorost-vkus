@@ -14,7 +14,9 @@ const config: CapacitorConfig = {
         url: serverUrl,
         cleartext: serverUrl.startsWith("http://"),
       }
-    : undefined,
+    : {
+        androidScheme: "https",
+      },
 };
 
 export default config;

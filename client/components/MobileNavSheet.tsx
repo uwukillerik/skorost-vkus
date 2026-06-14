@@ -1,12 +1,5 @@
 import { Link } from "react-router-dom";
-import {
-  ClipboardList,
-  Download,
-  LogOut,
-  Phone,
-  Smartphone,
-  User,
-} from "lucide-react";
+import { ClipboardList, LogOut, Phone, User } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -18,8 +11,6 @@ import { LEGAL_LINKS } from "@/lib/legal-content";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
-
-const APK_URL = "/downloads/skorost-vkus.apk";
 
 interface MobileNavSheetProps {
   open: boolean;
@@ -127,17 +118,6 @@ export function MobileNavSheet({ open, onOpenChange, activePath }: MobileNavShee
           >
             Корзина {itemCount > 0 ? `(${itemCount})` : ""}
           </Link>
-
-          <a
-            href={APK_URL}
-            download="skorost-vkus.apk"
-            onClick={close}
-            className="flex items-center gap-3 py-2.5 px-3 rounded-xl font-semibold text-sm bg-[#3DDC84]/15 text-[#1a6b3a] border border-[#3DDC84]/30"
-          >
-            <Smartphone className="h-5 w-5" />
-            Скачать APK
-            <Download className="h-4 w-4 ml-auto opacity-70" />
-          </a>
         </div>
 
         <div className="flex flex-wrap gap-x-3 gap-y-1 pt-3 text-xs text-muted-foreground">

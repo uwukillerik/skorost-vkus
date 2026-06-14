@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { SafeImage } from "@/components/SafeImage";
 import Layout from "@/components/Layout";
 import { useProductDetail } from "@/hooks/use-menu";
 import { useCart } from "@/context/CartContext";
@@ -69,7 +70,7 @@ export default function ProductPage() {
 
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-10">
           <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl aspect-[4/3] sm:aspect-square max-h-[280px] sm:max-h-[420px] lg:max-h-none">
-            <img
+            <SafeImage
               src={product.imageUrl}
               alt={product.name}
               className="w-full h-full object-cover"

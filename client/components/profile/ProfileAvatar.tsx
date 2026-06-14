@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import type { UserPublic } from "@shared/api";
 import { api } from "@/lib/api";
 import { readImageAsDataUrl, initialsFromName } from "@/lib/avatar-image";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
 import { Camera, Loader2, Trash2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -90,7 +91,7 @@ export function ProfileAvatar({
           >
             {hasAvatar ? (
               <img
-                src={user.avatarUrl!}
+                src={resolveMediaUrl(user.avatarUrl)}
                 alt=""
                 className="h-full w-full object-cover"
               />
@@ -183,7 +184,7 @@ export function UserAvatarBubble({
   if (user.avatarUrl) {
     return (
       <img
-        src={user.avatarUrl}
+        src={resolveMediaUrl(user.avatarUrl)}
         alt=""
         className={cn("rounded-full object-cover", className)}
       />

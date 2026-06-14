@@ -26,7 +26,6 @@ import { useAuth } from "@/context/AuthContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { MobileNavSheet } from "@/components/MobileNavSheet";
-import { AndroidAppDownload } from "@/components/AndroidAppDownload";
 import { PwaInstallBanner } from "@/components/PwaInstallBanner";
 import { LEGAL_LINKS } from "@/lib/legal-content";
 import { cn } from "@/lib/utils";
@@ -177,7 +176,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <footer className="bg-secondary text-secondary-foreground mt-16 border-t border-white/5 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
               <BrandLogo size="sm" className="mb-4" showText />
               <p className="text-sm opacity-80">
@@ -226,7 +225,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 ))}
               </ul>
             </div>
-            <AndroidAppDownload variant="footer" />
           </div>
           <div className="border-t border-white/20 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm opacity-60">
             <p>&copy; 2026 Скорость & Вкус</p>

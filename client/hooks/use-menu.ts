@@ -5,6 +5,8 @@ export function useCategories() {
   return useQuery({
     queryKey: ["categories"],
     queryFn: () => api.categories.list().then((r) => r.categories),
+    retry: 2,
+    staleTime: 30_000,
   });
 }
 
@@ -12,6 +14,8 @@ export function useProducts(params?: { category?: string; featured?: boolean }) 
   return useQuery({
     queryKey: ["products", params],
     queryFn: () => api.products.list(params).then((r) => r.products),
+    retry: 2,
+    staleTime: 30_000,
   });
 }
 
@@ -57,6 +61,8 @@ export function useCombos() {
   return useQuery({
     queryKey: ["combos"],
     queryFn: () => api.combos.list().then((r) => r.combos),
+    retry: 2,
+    staleTime: 30_000,
   });
 }
 

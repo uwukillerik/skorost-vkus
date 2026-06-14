@@ -145,27 +145,69 @@
     @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
   }
 
-  /* Плавающая нижняя навигация — liquid glass */
+  /* Плавающая нижняя навигация — liquid glass (плотный фон, без просвечивания текста) */
   .liquid-glass-nav {
-    background: linear-gradient(
-      145deg,
-      hsl(var(--card) / 0.82) 0%,
-      hsl(var(--card) / 0.62) 42%,
-      hsl(var(--primary) / 0.1) 100%
-    );
-    backdrop-filter: blur(22px) saturate(190%);
-    -webkit-backdrop-filter: blur(22px) saturate(190%);
-    border: 1px solid hsl(0 0% 100% / 0.45);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: hsl(var(--card) / 0.97);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border: 1px solid hsl(0 0% 100% / 0.55);
     box-shadow:
-      0 12px 40px hsl(var(--foreground) / 0.14),
-      0 4px 12px hsl(var(--foreground) / 0.06),
-      inset 0 1px 0 hsl(0 0% 100% / 0.65),
-      inset 0 -1px 0 hsl(var(--foreground) / 0.04);
+      0 16px 48px hsl(var(--foreground) / 0.16),
+      0 6px 16px hsl(var(--foreground) / 0.08),
+      inset 0 1px 0 hsl(0 0% 100% / 0.75),
+      inset 0 -1px 0 hsl(var(--foreground) / 0.06);
+  }
+
+  .liquid-glass-nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      155deg,
+      hsl(0 0% 100% / 0.72) 0%,
+      hsl(var(--card) / 0.55) 38%,
+      hsl(var(--card) / 0.35) 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .liquid-glass-nav::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: hsl(var(--card) / 0.88);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .liquid-glass-nav > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .liquid-glass-nav-scrim {
+    background: linear-gradient(
+      to top,
+      hsl(var(--background) / 0.96) 0%,
+      hsl(var(--background) / 0.72) 45%,
+      hsl(var(--background) / 0) 100%
+    );
   }
 
   @supports not (backdrop-filter: blur(1px)) {
     .liquid-glass-nav {
-      background: hsl(var(--card) / 0.95);
+      background-color: hsl(var(--card));
+    }
+
+    .liquid-glass-nav::before,
+    .liquid-glass-nav::after {
+      display: none;
     }
   }
 

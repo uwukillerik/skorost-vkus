@@ -30,8 +30,12 @@ export function MobileBottomNav() {
       className="md:hidden fixed inset-x-0 bottom-0 z-40 pointer-events-none px-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))]"
       aria-hidden={false}
     >
+      <div
+        className="liquid-glass-nav-scrim absolute inset-x-0 bottom-0 h-[5.5rem] pointer-events-none"
+        aria-hidden
+      />
       <nav
-        className="liquid-glass-nav pointer-events-auto mx-auto max-w-md rounded-[1.75rem] px-2 py-1.5"
+        className="liquid-glass-nav pointer-events-auto relative mx-auto max-w-md rounded-[1.75rem] px-2 py-1.5"
         aria-label="Основная навигация"
       >
         <div className="flex items-center justify-around gap-0.5">

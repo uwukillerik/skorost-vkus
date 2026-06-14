@@ -149,29 +149,45 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  .safe-area-pt {
-    padding-top: env(safe-area-inset-top, 0px);
+  .native-safe-bottom {
+    padding-bottom: var(--safe-bottom, env(safe-area-inset-bottom, 0px));
   }
 
   html.capacitor-native {
-    --safe-top: max(env(safe-area-inset-top, 0px), 24px);
+    --safe-top: max(env(safe-area-inset-top, 0px), 28px);
+    --safe-bottom: max(env(safe-area-inset-bottom, 0px), 40px);
   }
 
   html.capacitor-native .safe-area-pt {
     padding-top: var(--safe-top);
   }
 
-  html.capacitor-native .page-with-bottom-nav {
-    padding-bottom: calc(
-      var(--bottom-nav-h) + max(env(safe-area-inset-bottom, 0px), 8px) + 1rem
-    );
+  html.capacitor-native .safe-area-pb,
+  html.capacitor-native .native-safe-bottom {
+    padding-bottom: var(--safe-bottom);
   }
 
-  /* Отступ под нижнюю навигацию + safe area (iPhone) */
+  html.capacitor-native .page-with-bottom-nav {
+    padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 0.75rem);
+  }
+
+  html.capacitor-native .page-without-bottom-nav {
+    padding-bottom: calc(var(--safe-bottom) + 1rem);
+  }
+
+  /* Отступ под нижнюю навигацию + safe area */
   .page-with-bottom-nav {
     padding-bottom: calc(
       var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px) + 1rem
     );
+  }
+
+  .page-without-bottom-nav {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  }
+
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top, 0px);
   }
 
   @media (min-width: 768px) {

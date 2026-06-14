@@ -20,6 +20,7 @@ import { optionalAuth, requireAuth, requireAdmin } from "./middleware/auth";
 import { ensureAvatarDir } from "./lib/avatar";
 import { ensureAllUploadDirs } from "./lib/images";
 import adminUploadsRoutes from "./routes/admin/uploads";
+import proxyImageRoutes from "./routes/proxy-image";
 
 ensureAvatarDir();
 ensureAllUploadDirs();
@@ -46,6 +47,8 @@ export function createServer() {
     const ping = process.env.PING_MESSAGE ?? "ping";
     res.json({ message: ping });
   });
+
+  app.use("/api/proxy-image", proxyImageRoutes);
 
   app.use("/api/auth", authRoutes);
   app.use("/api/categories", categoriesRoutes);

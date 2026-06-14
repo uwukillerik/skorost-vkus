@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { resolveMediaUrl } from "@/lib/media-url";
+import {
+  resolveMediaUrl,
+  resolveMediaUrlFallback,
+} from "@/lib/media-url";
 
 const FALLBACK = "/placeholder.svg";
 
@@ -30,7 +33,13 @@ export function SafeImage({
       alt={alt}
       className={cn(className)}
       onError={() => {
-        if (current !== fallback) setCurrent(fallback);
+        const next = resolveMediaUrlFallback(src, current);
+        if (next && next !== current) {
+          setCurrent(next);
+          return;
+        }
+        const fb = resolveMediaUrl(fallback);
+        if (current !== fb) setCurrent(fb);
       }}
       loading="lazy"
       decoding="async"

@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Home, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 interface AuthPageShellProps {
   title: string;
@@ -50,11 +49,9 @@ export function AuthPageShell({ title, subtitle, children }: AuthPageShellProps)
         </div>
       </header>
 
-      <main className="page-with-bottom-nav min-w-0 w-full px-4 py-6 sm:py-8">
-        <div className="max-w-md mx-auto w-full">{children}</div>
+      <main className="page-without-bottom-nav min-w-0 w-full px-4 py-6 sm:py-8 overflow-y-auto">
+        <div className="max-w-md mx-auto w-full pb-4">{children}</div>
       </main>
-
-      <MobileBottomNav />
     </div>
   );
 }

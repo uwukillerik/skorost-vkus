@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SafeImage } from "@/components/SafeImage";
+import { resolveAssetUrl } from "@/lib/media-url";
 
 export function PromoBanner() {
+  const logoBg = resolveAssetUrl("/Logo.png");
+
   return (
     <section className="relative overflow-hidden hero-mesh text-white rounded-2xl sm:rounded-3xl mx-4 sm:mx-5 lg:mx-6 shadow-lg sm:shadow-2xl">
-      <div className="absolute inset-0 opacity-[0.06] bg-[url('/Logo.png')] bg-center bg-no-repeat bg-[length:min(200px,70%)] sm:bg-[length:min(420px,70%)] pointer-events-none" />
+      <div
+        className="absolute inset-0 opacity-[0.06] bg-center bg-no-repeat bg-[length:min(200px,70%)] sm:bg-[length:min(420px,70%)] pointer-events-none"
+        style={{ backgroundImage: `url(${logoBg})` }}
+      />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-16 md:py-20 lg:px-12">
         <div className="grid lg:grid-cols-[1fr_auto] gap-8 lg:gap-10 items-center">
           <div className="text-center lg:text-left">
@@ -17,7 +24,7 @@ export function PromoBanner() {
               </span>
             </div>
             <div className="flex flex-col items-center lg:items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
-              <img
+              <SafeImage
                 src="/Logo.png"
                 alt="Скорость и Вкус"
                 className="h-16 w-16 sm:h-24 sm:w-24 rounded-2xl object-contain bg-white/95 p-1.5 sm:p-2 shadow-xl"
@@ -68,7 +75,7 @@ export function PromoBanner() {
             </div>
           </div>
           <div className="hidden lg:block relative">
-            <img
+            <SafeImage
               src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=480&h=480&fit=crop"
               alt=""
               className="w-72 h-72 object-cover rounded-3xl shadow-2xl rotate-2 border-4 border-white/20"

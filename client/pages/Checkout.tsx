@@ -145,7 +145,7 @@ export default function Checkout() {
 
   return (
     <Layout>
-      <div className="page-container max-w-2xl py-6 sm:py-10 pb-8 md:pb-10">
+      <div className="page-container max-w-2xl py-6 sm:py-10 page-without-bottom-nav">
         <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6">Оформление</h1>
         <CheckoutSteps current={step} />
         <div ref={stepAnchorRef} className="scroll-mt-24" aria-hidden />

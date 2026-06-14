@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Check, ChevronRight, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SafeImage } from "@/components/SafeImage";
 import {
   buildComboSlots,
   comboLinePrice,
@@ -89,9 +90,9 @@ export function ComboBuilderDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100vw-1rem)] max-w-lg sm:max-w-lg rounded-2xl sm:rounded-3xl p-0 gap-0 max-h-[min(92dvh,720px)] sm:max-h-[90vh] overflow-hidden flex flex-col max-sm:fixed max-sm:inset-x-2 max-sm:bottom-2 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0">
+      <DialogContent className="w-[calc(100vw-1rem)] max-w-lg sm:max-w-lg rounded-2xl sm:rounded-3xl p-0 gap-0 max-h-[min(85dvh,720px)] sm:max-h-[90vh] overflow-hidden flex flex-col max-sm:fixed max-sm:inset-x-2 max-sm:bottom-[max(0.5rem,var(--safe-bottom,env(safe-area-inset-bottom,0px)))] max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0">
         <div className="relative h-36 sm:h-44 shrink-0">
-          <img
+          <SafeImage
             src={combo.imageUrl}
             alt=""
             className="w-full h-full object-cover"
@@ -144,7 +145,7 @@ export function ComboBuilderDialog({
                           : "border-border bg-card hover:border-primary/30",
                       )}
                     >
-                      <img
+                      <SafeImage
                         src={opt.imageUrl}
                         alt=""
                         className="w-full aspect-square rounded-lg object-cover mb-2"
@@ -197,7 +198,7 @@ export function ComboBuilderDialog({
           )}
         </div>
 
-        <div className="border-t p-4 flex items-center justify-between gap-3 bg-card shrink-0">
+        <div className="border-t p-4 flex items-center justify-between gap-3 bg-card shrink-0 native-safe-bottom">
           <div>
             <p className="text-xs text-muted-foreground">Сейчас</p>
             <p className="text-2xl font-black text-primary">

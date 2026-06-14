@@ -11,7 +11,11 @@ export function MobileBottomNav() {
   const { isAuthenticated, user } = useAuth();
 
   const hideOn =
-    location.pathname.startsWith("/admin") || location.pathname === "/checkout";
+    location.pathname.startsWith("/admin") ||
+    location.pathname === "/checkout" ||
+    location.pathname.startsWith("/login") ||
+    location.pathname.startsWith("/register") ||
+    location.pathname.startsWith("/legal");
 
   if (hideOn) return null;
 

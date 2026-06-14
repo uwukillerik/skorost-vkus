@@ -26,68 +26,101 @@ export function MobileBottomNav() {
   });
 
   return (
-    <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-border/70 bg-card/98 backdrop-blur-lg safe-area-pb"
-      aria-label="Основная навигация"
+    <div
+      className="md:hidden fixed inset-x-0 bottom-0 z-40 pointer-events-none px-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))]"
+      aria-hidden={false}
     >
-      <div className="flex items-stretch justify-around h-14 max-w-lg mx-auto px-1 pt-1">
-        {visibleLinks.map((link) => {
-          const active =
-            link.to === "/"
-              ? location.pathname === "/"
-              : link.to === "/orders"
-                ? location.pathname.startsWith("/orders") ||
-                  location.pathname.startsWith("/order/")
-                : link.to === "/login"
-                  ? location.pathname.startsWith("/login") ||
-                    location.pathname.startsWith("/register")
-                  : location.pathname.startsWith(link.to);
-          const Icon = link.icon;
-          const isCart = link.emphasis;
+      <nav
+        className="liquid-glass-nav pointer-events-auto mx-auto max-w-md rounded-[1.75rem] px-2 py-1.5"
+        aria-label="Основная навигация"
+      >
+        <div className="flex items-center justify-around gap-0.5">
+          {visibleLinks.map((link) => {
+            const active =
+              link.to === "/"
+                ? location.pathname === "/"
+                : link.to === "/orders"
+                  ? location.pathname.startsWith("/orders") ||
+                    location.pathname.startsWith("/order/")
+                  : link.to === "/login"
+                    ? location.pathname.startsWith("/login") ||
+                      location.pathname.startsWith("/register")
+                    : location.pathname.startsWith(link.to);
+            const Icon = link.icon;
+            const isCart = link.emphasis;
 
-          return (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={cn(
-                "relative flex flex-col items-center justify-center flex-1 min-w-0 py-0.5 gap-0 rounded-lg transition-colors",
-                active && "text-primary",
-                !active && "text-muted-foreground",
-              )}
-            >
-              <span
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
                 className={cn(
-                  "flex items-center justify-center rounded-xl transition-all",
-                  isCart ? "h-9 w-9 -mt-1" : "h-8 w-8",
-                  active && isCart && "bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20",
-                  active && !isCart && "bg-primary/10",
-                  !active && isCart && "bg-muted",
+                  "relative flex flex-col items-center justify-center flex-1 min-w-0 py-1 gap-0.5 rounded-2xl transition-all duration-300",
+                  active && !isCart && "text-primary",
+                  !active && !isCart && "text-muted-foreground",
+                  isCart && "text-primary-foreground",
                 )}
               >
-                {link.to === "/profile" && user ? (
-                  <UserAvatarBubble
-                    user={user}
-                    className={cn(
-                      isCart ? "h-7 w-7" : "h-7 w-7",
-                      active && "ring-2 ring-primary ring-offset-1 ring-offset-card",
-                    )}
+                {active && !isCart && (
+                  <span
+                    className="absolute inset-x-1 inset-y-0.5 rounded-2xl bg-primary/12 border border-primary/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]"
+                    aria-hidden
                   />
-                ) : (
-                  <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 2} />
                 )}
-              </span>
-              <span className="text-[10px] font-semibold leading-none">
-                {link.label}
-              </span>
-              {link.showBadge && itemCount > 0 && (
-                <span className="absolute top-0 right-[22%] min-w-[16px] h-4 bg-accent text-accent-foreground text-[9px] font-black rounded-full flex items-center justify-center px-1">
-                  {itemCount > 9 ? "9+" : itemCount}
+
+                <span
+                  className={cn(
+                    "relative z-[1] flex items-center justify-center transition-all duration-300",
+                    isCart
+                      ? cn(
+                          "h-11 w-11 -mt-2 rounded-2xl shadow-lg",
+                          active
+                            ? "bg-gradient-to-br from-primary to-orange-600 shadow-primary/35 ring-2 ring-white/30"
+                            : "bg-gradient-to-br from-primary/90 to-orange-600/90 shadow-primary/25",
+                        )
+                      : "h-8 w-8 rounded-xl",
+                  )}
+                >
+                  {link.to === "/profile" && user ? (
+                    <UserAvatarBubble
+                      user={user}
+                      className={cn(
+                        "h-7 w-7",
+                        active && "ring-2 ring-primary/40 ring-offset-2 ring-offset-transparent",
+                      )}
+                    />
+                  ) : (
+                    <Icon
+                      className={cn(isCart ? "h-5 w-5" : "h-[1.125rem] w-[1.125rem]")}
+                      strokeWidth={active ? 2.5 : 2}
+                    />
+                  )}
                 </span>
-              )}
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+
+                <span
+                  className={cn(
+                    "relative z-[1] text-[10px] font-bold leading-none tracking-tight",
+                    isCart && "-mt-0.5",
+                    active && !isCart && "text-primary",
+                  )}
+                >
+                  {link.label}
+                </span>
+
+                {link.showBadge && itemCount > 0 && (
+                  <span
+                    className={cn(
+                      "absolute z-[2] min-w-[18px] h-[18px] bg-accent text-accent-foreground text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow-md border-2 border-white/80",
+                      isCart ? "top-0 right-[18%]" : "top-0 right-[20%]",
+                    )}
+                  >
+                    {itemCount > 9 ? "9+" : itemCount}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </div>
   );
 }

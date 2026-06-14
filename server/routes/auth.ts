@@ -28,8 +28,8 @@ const registerSchema = z.object({
 });
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().trim().email("Некорректный email"),
+  password: z.string().min(1, "Введите пароль"),
 });
 
 const profileSchema = z.object({

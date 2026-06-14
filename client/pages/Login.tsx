@@ -26,9 +26,14 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail.includes("@") || !trimmedEmail.includes(".")) {
+      toast.error("Введите полный email, например admin@skorost-vkus.ru");
+      return;
+    }
     setLoading(true);
     try {
-      const loggedIn = await login(email, password);
+      const loggedIn = await login(trimmedEmail, password);
       toast.success("Добро пожаловать!");
       navigate(loggedIn.role === "ADMIN" ? "/admin" : from);
     } catch (err) {
@@ -55,7 +60,8 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="user@example.com"
+                  placeholder="admin@skorost-vkus.ru"
+                  autoComplete="email"
                 />
               </div>
               <div>
@@ -78,8 +84,9 @@ export default function Login() {
                 Зарегистрироваться
               </Link>
             </p>
-            <p className="text-center text-xs text-muted-foreground mt-2">
-              Демо: user@example.com / user123
+            <p className="text-center text-xs text-muted-foreground mt-2 space-y-1">
+              <span className="block">Демо: user@example.com / user123</span>
+              <span className="block">Админ: admin@skorost-vkus.ru / admin123</span>
             </p>
           </CardContent>
         </Card>

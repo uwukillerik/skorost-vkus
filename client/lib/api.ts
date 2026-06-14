@@ -33,7 +33,16 @@ async function request<T>(
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error || `Ошибка ${res.status}`);
+    const details = data.details as Record<string, string[] | undefined> | undefined;
+    const detailText = details
+      ? Object.values(details)
+          .flat()
+          .filter((line): line is string => Boolean(line))
+          .join(". ")
+      : "";
+    const message =
+      detailText || data.error || `Ошибка ${res.status}`;
+    throw new Error(message);
   }
   return data as T;
 }

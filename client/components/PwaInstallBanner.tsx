@@ -3,63 +3,28 @@ import { Download, X } from "lucide-react";
 import { SafeImage } from "@/components/SafeImage";
 import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 import { Button } from "@/components/ui/button";
+import { usePwaInstall } from "@/hooks/use-pwa-install";
 import { cn } from "@/lib/utils";
 
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
-
 export function PwaInstallBanner({ className }: { className?: string }) {
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
+  const { install, showPwa, canPromptPwa } = usePwaInstall();
   const [hidden, setHidden] = useState(false);
-  const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setInstalled(true);
-      return;
-    }
-
-    const dismissed = localStorage.getItem("pwa-install-dismissed");
-    if (dismissed) setHidden(true);
-
-    const onBeforeInstall = (e: Event) => {
-      e.preventDefault();
-      setDeferred(e as BeforeInstallPromptEvent);
-    };
-
-    const onInstalled = () => {
-      setInstalled(true);
-      setDeferred(null);
-    };
-
-    window.addEventListener("beforeinstallprompt", onBeforeInstall);
-    window.addEventListener("appinstalled", onInstalled);
-    return () => {
-      window.removeEventListener("beforeinstallprompt", onBeforeInstall);
-      window.removeEventListener("appinstalled", onInstalled);
-    };
+    if (localStorage.getItem("pwa-install-dismissed")) setHidden(true);
   }, []);
-
-  const handleInstall = async () => {
-    if (!deferred) return;
-    await deferred.prompt();
-    const { outcome } = await deferred.userChoice;
-    if (outcome === "accepted") setDeferred(null);
-  };
 
   const dismiss = () => {
     setHidden(true);
     localStorage.setItem("pwa-install-dismissed", "1");
   };
 
-  if (installed || hidden || !deferred) return null;
+  if (!showPwa || hidden || !canPromptPwa) return null;
 
   return (
     <div
       className={cn(
-        "fixed bottom-20 md:bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-50",
+        "fixed bottom-[calc(var(--bottom-nav-h)+env(safe-area-inset-bottom,0px)+0.5rem)] md:bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-50",
         "bg-card border-2 border-primary/20 shadow-2xl rounded-2xl p-4 animate-in slide-in-from-bottom-4",
         className,
       )}
@@ -77,13 +42,13 @@ export function PwaInstallBanner({ className }: { className?: string }) {
         <div>
           <p className="font-bold text-sm">Установить приложение</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Быстрый доступ с иконки на экране — работает как PWA
+            Иконка на экране — быстрый заказ без браузера
           </p>
         </div>
       </div>
-      <Button className="w-full mt-3 rounded-xl font-bold" size="sm" onClick={handleInstall}>
+      <Button className="w-full mt-3 rounded-xl font-bold" size="sm" onClick={() => install()}>
         <Download className="h-4 w-4 mr-2" />
-        Установить
+        Установить PWA
       </Button>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AppDownloadButtons } from "@/components/AppDownloadButtons";
 import { SafeImage } from "@/components/SafeImage";
 import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 
@@ -72,6 +73,12 @@ export function PromoBanner() {
               >
                 <Link to="/register">Получить бонусы</Link>
               </Button>
+            </div>
+            <div className="mt-4 pt-4 border-t border-white/15">
+              <p className="text-[11px] sm:text-xs font-semibold text-white/70 mb-2.5 text-center lg:text-left">
+                Или установите приложение
+              </p>
+              <AppDownloadButtons variant="hero" />
             </div>
           </div>
           <div className="hidden lg:block relative">

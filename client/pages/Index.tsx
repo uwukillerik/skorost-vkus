@@ -8,6 +8,7 @@ import { ComboCard } from "@/components/ComboCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { QuickActions } from "@/components/home/QuickActions";
+import { HomeAppDownload } from "@/components/home/HomeAppDownload";
 import { SafeImage } from "@/components/SafeImage";
 import { BRAND_LOGO_URL } from "@/lib/brand-assets";
 import {
@@ -57,6 +58,7 @@ export default function Index() {
     <Layout>
       <div className="pt-2 sm:pt-5 bg-muted/20">
         <PromoBanner />
+        <HomeAppDownload />
         <QuickActions />
       </div>
 

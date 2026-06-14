@@ -27,6 +27,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { MobileNavSheet } from "@/components/MobileNavSheet";
 import { PwaInstallBanner } from "@/components/PwaInstallBanner";
+import { AppDownloadButtons } from "@/components/AppDownloadButtons";
 import { LEGAL_LINKS } from "@/lib/legal-content";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +40,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const isActive = (path: string) =>
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
+
+  const hideAppBar =
+    location.pathname.startsWith("/admin") || location.pathname === "/checkout";
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-background bg-[radial-gradient(ellipse_at_top,hsl(32_40%_94%),transparent_55%)]">
@@ -174,9 +178,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="page-with-bottom-nav min-w-0 w-full">{children}</main>
 
-      <footer className="bg-secondary text-secondary-foreground mt-16 border-t border-white/5 hidden md:block">
+      {!hideAppBar && (
+        <div className="md:hidden border-t border-border/60 bg-card/95 backdrop-blur-sm px-4 py-3">
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Мобильное приложение</p>
+          <AppDownloadButtons variant="bar" />
+        </div>
+      )}
+
+      <footer className="bg-secondary text-secondary-foreground mt-8 md:mt-16 border-t border-white/5 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
             <div>
               <BrandLogo size="sm" className="mb-4" showText />
               <p className="text-sm opacity-80">
@@ -224,6 +235,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </li>
                 ))}
               </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Приложение</h4>
+              <p className="text-sm opacity-80 mb-3">
+                Android APK или PWA на экран телефона
+              </p>
+              <AppDownloadButtons variant="footer" />
             </div>
           </div>
           <div className="border-t border-white/20 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm opacity-60">

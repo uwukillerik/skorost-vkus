@@ -11,6 +11,7 @@ import { LEGAL_LINKS } from "@/lib/legal-content";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
+import { AppDownloadButtons } from "@/components/AppDownloadButtons";
 
 interface MobileNavSheetProps {
   open: boolean;
@@ -118,6 +119,11 @@ export function MobileNavSheet({ open, onOpenChange, activePath }: MobileNavShee
           >
             Корзина {itemCount > 0 ? `(${itemCount})` : ""}
           </Link>
+        </div>
+
+        <div className="pt-3 border-t border-border/60">
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Приложение</p>
+          <AppDownloadButtons variant="stack" />
         </div>
 
         <div className="flex flex-wrap gap-x-3 gap-y-1 pt-3 text-xs text-muted-foreground">

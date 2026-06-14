@@ -18,8 +18,11 @@ import loyaltyRoutes from "./routes/loyalty";
 import notificationsRoutes from "./routes/notifications";
 import { optionalAuth, requireAuth, requireAdmin } from "./middleware/auth";
 import { ensureAvatarDir } from "./lib/avatar";
+import { ensureAllUploadDirs } from "./lib/images";
+import adminUploadsRoutes from "./routes/admin/uploads";
 
 ensureAvatarDir();
+ensureAllUploadDirs();
 
 export function createServer() {
   const app = express();
@@ -58,6 +61,7 @@ export function createServer() {
   app.use("/api/admin/orders", requireAuth, requireAdmin, adminOrdersRoutes);
   app.use("/api/admin/stats", requireAuth, requireAdmin, adminStatsRoutes);
   app.use("/api/admin/users", requireAuth, requireAdmin, adminUsersRoutes);
+  app.use("/api/admin/upload", requireAuth, requireAdmin, adminUploadsRoutes);
 
   app.use(
     (

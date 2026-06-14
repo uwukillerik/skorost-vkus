@@ -3,8 +3,14 @@ import { z } from "zod";
 import { prisma } from "../../lib/prisma";
 import { validateBody } from "../../middleware/validate";
 import { serializeProduct } from "../../lib/serializers";
+import { isValidImageUrl } from "../../lib/images";
 
 const router = Router();
+
+const imageUrlSchema = z
+  .string()
+  .min(1, "Загрузите изображение")
+  .refine(isValidImageUrl, "Загрузите изображение с компьютера");
 
 const productSchema = z.object({
   categoryId: z.string(),
@@ -12,7 +18,7 @@ const productSchema = z.object({
   slug: z.string().min(1).regex(/^[a-z0-9-]+$/),
   description: z.string().min(1),
   price: z.number().positive(),
-  imageUrl: z.string().url(),
+  imageUrl: imageUrlSchema,
   isAvailable: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
   calories: z.number().int().optional().nullable(),

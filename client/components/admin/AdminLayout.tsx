@@ -6,15 +6,17 @@ import {
   Package,
   ClipboardList,
   Users,
-  Flame,
   Menu,
   LogOut,
+  ExternalLink,
+  Flame,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const links = [
   { to: "/admin", label: "Дашборд", icon: LayoutDashboard, exact: true },
@@ -39,10 +41,10 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             to={link.to}
             onClick={onNavigate}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
+              "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all",
               active
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-white/10",
+                ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
+                : "text-white/75 hover:bg-white/10 hover:text-white",
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
@@ -69,24 +71,41 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-muted/30 flex flex-col md:flex-row">
-      <aside className="hidden md:flex w-64 bg-secondary text-secondary-foreground flex-col shrink-0">
+    <div className="min-h-screen bg-[#f4f1ec] flex flex-col md:flex-row">
+      <aside className="hidden md:flex w-72 bg-gradient-to-b from-[#1a1410] to-[#2d2218] text-white flex-col shrink-0 shadow-xl">
         <div className="p-6 border-b border-white/10">
-          <Link to="/admin" className="flex items-center gap-2">
-            <Flame className="h-6 w-6 text-accent" />
-            <span className="font-bold">Админ-панель</span>
-          </Link>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center">
+              <Flame className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="font-extrabold text-lg leading-tight">Админ</p>
+              <p className="text-[11px] text-white/50">Скорость & Вкус</p>
+            </div>
+          </div>
           {user && (
-            <p className="text-xs text-white/60 mt-2 truncate">{user.email}</p>
+            <p className="text-xs text-white/60 truncate bg-white/5 rounded-lg px-3 py-2">
+              {user.email}
+            </p>
           )}
         </div>
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1.5">
           <NavLinks />
         </nav>
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/10 space-y-2">
           <Button
             variant="ghost"
-            className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10"
+            className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10 rounded-xl"
+            asChild
+          >
+            <Link to="/">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              На сайт
+            </Link>
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10 rounded-xl"
             onClick={handleLogout}
           >
             <LogOut className="h-4 w-4 mr-2" />
@@ -95,7 +114,7 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      <header className="md:hidden sticky top-0 z-50 bg-secondary text-secondary-foreground border-b border-white/10">
+      <header className="md:hidden sticky top-0 z-50 bg-[#1a1410] text-white border-b border-white/10 shadow-lg">
         <div className="flex items-center justify-between px-4 h-14">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -105,33 +124,17 @@ export default function AdminLayout() {
             </SheetTrigger>
             <SheetContent
               side="left"
-              className="w-72 bg-secondary text-secondary-foreground border-none p-0"
+              className="w-72 bg-gradient-to-b from-[#1a1410] to-[#2d2218] text-white border-none p-0"
             >
               <div className="p-6 border-b border-white/10">
-                <span className="font-bold flex items-center gap-2">
-                  <Flame className="h-5 w-5 text-accent" />
-                  Админ
-                </span>
+                <BrandLogo size="sm" showText />
               </div>
-              <nav className="p-4 space-y-1 flex flex-col">
+              <nav className="p-4 space-y-1.5 flex flex-col">
                 <NavLinks onNavigate={() => setOpen(false)} />
               </nav>
-              <div className="p-4 mt-auto">
-                <Button
-                  variant="ghost"
-                  className="w-full text-white/80"
-                  onClick={() => {
-                    setOpen(false);
-                    handleLogout();
-                  }}
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Выйти
-                </Button>
-              </div>
             </SheetContent>
           </Sheet>
-          <span className="font-semibold">{current?.label ?? "Админ"}</span>
+          <span className="font-bold">{current?.label ?? "Админ"}</span>
           <Button
             variant="ghost"
             size="icon"
@@ -143,8 +146,10 @@ export default function AdminLayout() {
         </div>
       </header>
 
-      <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-auto min-h-0">
-        <Outlet />
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto min-h-0">
+        <div className="max-w-6xl mx-auto">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

@@ -169,6 +169,11 @@ export const api = {
   },
   admin: {
     stats: () => request<{ stats: AdminStatsDto }>("/admin/stats"),
+    upload: (image: string, folder: "products" | "categories" | "combos") =>
+      request<{ url: string }>("/admin/upload", {
+        method: "POST",
+        body: JSON.stringify({ image, folder }),
+      }),
     categories: {
       list: () =>
         request<{ categories: CategoryDto[] }>("/admin/categories"),

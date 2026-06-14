@@ -3,15 +3,22 @@ import { z } from "zod";
 import { prisma } from "../../lib/prisma";
 import { validateBody } from "../../middleware/validate";
 import { serializeCategory } from "../../lib/serializers";
+import { isValidImageUrl } from "../../lib/images";
 
 const router = Router();
+
+const imageUrlSchema = z
+  .string()
+  .optional()
+  .nullable()
+  .refine((v) => !v || isValidImageUrl(v), "Некорректное изображение");
 
 const categorySchema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1).regex(/^[a-z0-9-]+$/),
   emoji: z.string().optional(),
   description: z.string().optional().nullable(),
-  imageUrl: z.string().optional().nullable(),
+  imageUrl: imageUrlSchema,
   sortOrder: z.number().int().optional(),
   isActive: z.boolean().optional(),
 });

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -14,14 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -29,8 +22,25 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import { toast } from "sonner";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminImageUpload } from "@/components/admin/AdminImageUpload";
+import { SafeImage } from "@/components/SafeImage";
+import { slugify } from "@/lib/slug";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const emptyForm = {
+  categoryId: "",
+  name: "",
+  slug: "",
+  description: "",
+  price: 0,
+  imageUrl: "",
+  isAvailable: true,
+  isFeatured: false,
+  calories: "" as string | number,
+};
 
 export default function AdminProducts() {
   const queryClient = useQueryClient();
@@ -45,36 +55,22 @@ export default function AdminProducts() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ProductDto | null>(null);
-  const [form, setForm] = useState({
-    categoryId: "",
-    name: "",
-    slug: "",
-    description: "",
-    price: 0,
-    imageUrl: "",
-    isAvailable: true,
-    isFeatured: false,
-    calories: "" as string | number,
-  });
+  const [form, setForm] = useState(emptyForm);
+  const [slugTouched, setSlugTouched] = useState(false);
 
   const openCreate = () => {
     setEditing(null);
+    setSlugTouched(false);
     setForm({
+      ...emptyForm,
       categoryId: categories[0]?.id || "",
-      name: "",
-      slug: "",
-      description: "",
-      price: 0,
-      imageUrl: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
-      isAvailable: true,
-      isFeatured: false,
-      calories: "",
     });
     setDialogOpen(true);
   };
 
   const openEdit = (p: ProductDto) => {
     setEditing(p);
+    setSlugTouched(true);
     setForm({
       categoryId: p.categoryId,
       name: p.name,
@@ -90,6 +86,10 @@ export default function AdminProducts() {
   };
 
   const handleSave = async () => {
+    if (!form.imageUrl) {
+      toast.error("Загрузите изображение товара");
+      return;
+    }
     const body = {
       ...form,
       price: Number(form.price),
@@ -124,76 +124,113 @@ export default function AdminProducts() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Товары</h1>
-        <Button onClick={openCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Добавить
-        </Button>
-      </div>
+      <AdminPageHeader
+        title="Товары"
+        description="Добавляйте блюда с фото с компьютера — без ссылок на картинки"
+        action={
+          <Button onClick={openCreate} className="rounded-xl font-bold shadow-md">
+            <Plus className="h-4 w-4 mr-2" />
+            Добавить товар
+          </Button>
+        }
+      />
 
       {isLoading ? (
-        <p>Загрузка...</p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-48 rounded-2xl" />
+          ))}
+        </div>
+      ) : products.length === 0 ? (
+        <div className="text-center py-16 bg-card rounded-2xl border-2 border-dashed">
+          <p className="text-muted-foreground mb-4">Товаров пока нет</p>
+          <Button onClick={openCreate}>Добавить первый товар</Button>
+        </div>
       ) : (
-        <div className="bg-card rounded-xl shadow overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Фото</TableHead>
-                <TableHead>Название</TableHead>
-                <TableHead>Категория</TableHead>
-                <TableHead>Цена</TableHead>
-                <TableHead>Доступен</TableHead>
-                <TableHead className="text-right">Действия</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell>
-                    <img
-                      src={p.imageUrl}
-                      alt=""
-                      className="w-12 h-12 rounded object-cover"
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium">{p.name}</TableCell>
-                  <TableCell>{p.categoryName}</TableCell>
-                  <TableCell>{p.price}₽</TableCell>
-                  <TableCell>{p.isAvailable ? "Да" : "Нет"}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(p)}>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {products.map((p) => (
+            <article
+              key={p.id}
+              className="bg-card rounded-2xl border shadow-sm overflow-hidden hover:shadow-lg transition-shadow group"
+            >
+              <div className="relative h-36 bg-muted">
+                <SafeImage
+                  src={p.imageUrl}
+                  alt={p.name}
+                  className="w-full h-full object-cover"
+                />
+                {p.isFeatured && (
+                  <Badge className="absolute top-2 left-2 gap-1">
+                    <Star className="h-3 w-3" />
+                    Хит
+                  </Badge>
+                )}
+                {!p.isAvailable && (
+                  <Badge
+                    variant="secondary"
+                    className="absolute top-2 right-2 bg-black/60 text-white"
+                  >
+                    Скрыт
+                  </Badge>
+                )}
+              </div>
+              <div className="p-4">
+                <h3 className="font-bold text-lg leading-tight line-clamp-1">
+                  {p.name}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {p.categoryName} · {p.slug}
+                </p>
+                <div className="flex items-center justify-between mt-3">
+                  <span className="text-xl font-black text-primary">
+                    {p.price}₽
+                  </span>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-xl"
+                      onClick={() => openEdit(p)}
+                    >
                       <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="icon"
-                      className="text-destructive"
+                      className="rounded-xl text-destructive hover:text-destructive"
                       onClick={() => handleDelete(p.id)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl">
           <DialogHeader>
-            <DialogTitle>{editing ? "Редактировать" : "Новый товар"}</DialogTitle>
+            <DialogTitle className="text-xl font-extrabold">
+              {editing ? "Редактировать товар" : "Новый товар"}
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-3 py-2">
+          <div className="space-y-4 py-2">
+            <AdminImageUpload
+              value={form.imageUrl}
+              onChange={(url) => setForm({ ...form, imageUrl: url })}
+              folder="products"
+            />
+
             <div>
               <Label>Категория</Label>
               <Select
                 value={form.categoryId}
                 onValueChange={(v) => setForm({ ...form, categoryId: v })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -205,33 +242,51 @@ export default function AdminProducts() {
                 </SelectContent>
               </Select>
             </div>
+
             <div>
               <Label>Название</Label>
               <Input
+                className="rounded-xl"
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  setForm({
+                    ...form,
+                    name,
+                    slug: slugTouched ? form.slug : slugify(name),
+                  });
+                }}
               />
             </div>
+
             <div>
-              <Label>Slug</Label>
+              <Label>Slug (латиница, для URL)</Label>
               <Input
+                className="rounded-xl font-mono text-sm"
                 value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  setForm({ ...form, slug: e.target.value });
+                }}
               />
             </div>
+
             <div>
               <Label>Описание</Label>
               <Textarea
+                className="rounded-xl min-h-[80px]"
                 value={form.description}
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
                 }
               />
             </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>Цена</Label>
+                <Label>Цена, ₽</Label>
                 <Input
+                  className="rounded-xl"
                   type="number"
                   value={form.price}
                   onChange={(e) =>
@@ -242,6 +297,7 @@ export default function AdminProducts() {
               <div>
                 <Label>Ккал</Label>
                 <Input
+                  className="rounded-xl"
                   value={form.calories}
                   onChange={(e) =>
                     setForm({ ...form, calories: e.target.value })
@@ -249,16 +305,8 @@ export default function AdminProducts() {
                 />
               </div>
             </div>
-            <div>
-              <Label>URL изображения</Label>
-              <Input
-                value={form.imageUrl}
-                onChange={(e) =>
-                  setForm({ ...form, imageUrl: e.target.value })
-                }
-              />
-            </div>
-            <div className="flex gap-6">
+
+            <div className="flex flex-wrap gap-6 pt-1">
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.isAvailable}
@@ -266,7 +314,7 @@ export default function AdminProducts() {
                     setForm({ ...form, isAvailable: v })
                   }
                 />
-                <Label>Доступен</Label>
+                <Label>В продаже</Label>
               </div>
               <div className="flex items-center gap-2">
                 <Switch
@@ -275,15 +323,21 @@ export default function AdminProducts() {
                     setForm({ ...form, isFeatured: v })
                   }
                 />
-                <Label>Хит</Label>
+                <Label>Хит меню</Label>
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              className="rounded-xl"
+              onClick={() => setDialogOpen(false)}
+            >
               Отмена
             </Button>
-            <Button onClick={handleSave}>Сохранить</Button>
+            <Button className="rounded-xl font-bold" onClick={handleSave}>
+              Сохранить
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

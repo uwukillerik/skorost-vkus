@@ -12,6 +12,7 @@ import {
   Clock,
   CheckCircle,
 } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useAdminStats();
@@ -35,10 +36,13 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Дашборд</h1>
+      <AdminPageHeader
+        title="Дашборд"
+        description="Сводка по заказам и выручке"
+      />
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-        <Card>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-6 sm:mb-8">
+        <Card className="rounded-2xl border-0 shadow-md bg-gradient-to-br from-primary/10 to-card">
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <ShoppingBag className="h-4 w-4" />
@@ -49,7 +53,7 @@ export default function AdminDashboard() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="rounded-2xl border-0 shadow-md">
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <Wallet className="h-4 w-4" />
@@ -60,7 +64,7 @@ export default function AdminDashboard() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="rounded-2xl border-0 shadow-md">
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <CheckCircle className="h-4 w-4" />
@@ -71,7 +75,7 @@ export default function AdminDashboard() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="rounded-2xl border-0 shadow-md">
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <Clock className="h-4 w-4" />

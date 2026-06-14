@@ -1,7 +1,7 @@
 const MAX_SIDE = 512;
 const JPEG_QUALITY = 0.85;
 
-export function readImageAsDataUrl(file: File): Promise<string> {
+export function readImageAsDataUrl(file: File, maxSide = 512): Promise<string> {
   return new Promise((resolve, reject) => {
     if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
       reject(new Error("Выберите JPG, PNG или WebP"));
@@ -14,19 +14,19 @@ export function readImageAsDataUrl(file: File): Promise<string> {
     const reader = new FileReader();
     reader.onload = () => {
       const src = reader.result as string;
-      compressImage(src).then(resolve).catch(reject);
+      compressImage(src, maxSide).then(resolve).catch(reject);
     };
     reader.onerror = () => reject(new Error("Не удалось прочитать файл"));
     reader.readAsDataURL(file);
   });
 }
 
-function compressImage(dataUrl: string): Promise<string> {
+function compressImage(dataUrl: string, maxSide: number): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
       let { width, height } = img;
-      const scale = Math.min(1, MAX_SIDE / Math.max(width, height));
+      const scale = Math.min(1, maxSide / Math.max(width, height));
       width = Math.round(width * scale);
       height = Math.round(height * scale);
       const canvas = document.createElement("canvas");

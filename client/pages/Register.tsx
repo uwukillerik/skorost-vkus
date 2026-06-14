@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
+import { LegalConsentCheckbox } from "@/components/LegalConsentCheckbox";
 import { toast } from "sonner";
 
 export default function Register() {
@@ -16,6 +17,7 @@ export default function Register() {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [referralCode, setReferralCode] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -28,6 +30,10 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptedLegal) {
+      toast.error("Подтвердите согласие с документами");
+      return;
+    }
     setLoading(true);
     try {
       await register({
@@ -109,7 +115,16 @@ export default function Register() {
                   minLength={6}
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
+              <LegalConsentCheckbox
+                checked={acceptedLegal}
+                onCheckedChange={setAcceptedLegal}
+                id="register-legal"
+              />
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading || !acceptedLegal}
+              >
                 {loading ? "Регистрация..." : "Создать аккаунт"}
               </Button>
             </form>

@@ -30,7 +30,9 @@ import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
 import AdminUsers from "./pages/admin/Users";
 import AdminOrderDetail from "./pages/admin/OrderDetail";
+import LegalDocument from "./pages/legal/LegalDocument";
 import { useScrollToTopOnNavigate } from "@/hooks/use-scroll-to-top";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -104,6 +106,7 @@ function AppRoutes() {
               />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/legal/:docId" element={<LegalDocument />} />
               <Route
                 path="/orders"
                 element={
@@ -140,6 +143,15 @@ function AppRoutes() {
   );
 }
 
+function PwaBootstrap() {
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {});
+    }
+  }, []);
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -148,6 +160,7 @@ const App = () => (
           <Toaster />
           <Sonner position="top-center" richColors />
           <BrowserRouter>
+            <PwaBootstrap />
             <AppRoutes />
           </BrowserRouter>
         </TooltipProvider>

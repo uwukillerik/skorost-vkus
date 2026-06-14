@@ -1,6 +1,7 @@
 import type { CategoryDto } from "@shared/api";
 import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
+import { SafeImage } from "@/components/SafeImage";
 
 interface CategoryGridProps {
   categories: CategoryDto[];
@@ -33,7 +34,7 @@ export function CategoryGrid({
           >
             <div className="relative w-[88px] sm:w-[100px] shrink-0 overflow-hidden">
               {cat.imageUrl ? (
-                <img
+                <SafeImage
                   src={cat.imageUrl}
                   alt=""
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"

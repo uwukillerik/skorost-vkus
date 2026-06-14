@@ -21,9 +21,9 @@ const IMG = {
   fries:
     "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=300&fit=crop",
   wings:
-    "https://images.unsplash.com/photo-1608039755401-6c9a5c4b8b0e?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1626082927389-6fc099cfd057?w=400&h=300&fit=crop",
   rings:
-    "https://images.unsplash.com/photo-1630431341973-02d0d6c5d5a4?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1619885838867-2c653b273002?w=400&h=300&fit=crop",
   pizza:
     "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop",
   nuggets:
@@ -31,7 +31,7 @@ const IMG = {
   cola: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=300&fit=crop",
   juice:
     "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop",
-  tea: "https://images.unsplash.com/photo-1556670213-1c0e0c0e0e0e?w=400&h=300&fit=crop",
+  tea: "https://images.unsplash.com/photo-1576092760221-28fbb1f67f5d?w=400&h=300&fit=crop",
   shake:
     "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop",
   water:
@@ -41,7 +41,7 @@ const IMG = {
   icecream:
     "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop",
   cheesecake:
-    "https://images.unsplash.com/photo-1524351196289-7a9e0b5b5b5b?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1565958011703-39842a62890?w=400&h=300&fit=crop",
   donut:
     "https://images.unsplash.com/photo-1551024503-8b3838c4da8e?w=400&h=300&fit=crop",
   pudding:

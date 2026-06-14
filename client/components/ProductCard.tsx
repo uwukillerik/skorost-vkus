@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
+import { SafeImage } from "@/components/SafeImage";
 
 export function ProductCard({ product }: { product: ProductDto }) {
   const { addItem } = useCart();
@@ -22,7 +23,7 @@ export function ProductCard({ product }: { product: ProductDto }) {
         to={`/product/${product.slug}`}
         className="block relative shrink-0 w-[7.25rem] h-[7.25rem] min-[480px]:w-full min-[480px]:h-auto min-[480px]:aspect-square overflow-hidden bg-muted"
       >
-        <img
+        <SafeImage
           src={product.imageUrl}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

@@ -26,6 +26,8 @@ import { useAuth } from "@/context/AuthContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { AndroidAppDownload } from "@/components/AndroidAppDownload";
+import { PwaInstallBanner } from "@/components/PwaInstallBanner";
+import { LEGAL_LINKS } from "@/lib/legal-content";
 import { cn } from "@/lib/utils";
 import { Smartphone, Download } from "lucide-react";
 
@@ -280,23 +282,35 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Контакты</h4>
+              <h4 className="font-semibold mb-4">Документы</h4>
               <ul className="space-y-2 text-sm opacity-80">
-                <li>+7 (999) 123-45-67</li>
-                <li>hello@skorost-vkus.ru</li>
-                <li>10:00 — 23:00</li>
+                {LEGAL_LINKS.map((link) => (
+                  <li key={link.to}>
+                    <Link to={link.to} className="hover:text-accent">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
             <AndroidAppDownload variant="footer" />
           </div>
-          <div className="border-t border-white/20 pt-8 text-center text-sm opacity-60">
+          <div className="border-t border-white/20 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm opacity-60">
             <p>&copy; 2026 Скорость & Вкус</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+              {LEGAL_LINKS.map((link) => (
+                <Link key={link.to} to={link.to} className="hover:text-accent hover:opacity-100">
+                  {link.label.replace("Политика конфиденциальности", "Конфиденциальность").replace("Согласие на обработку данных", "Согласие на данные")}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </footer>
 
       <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
       <MobileBottomNav />
+      <PwaInstallBanner />
     </div>
   );
 }

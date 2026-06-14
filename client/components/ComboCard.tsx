@@ -4,6 +4,7 @@ import type { ComboDto, ProductDto } from "@shared/api";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ComboBuilderDialog } from "@/components/combo/ComboBuilderDialog";
+import { SafeImage } from "@/components/SafeImage";
 
 export function ComboCard({
   combo,
@@ -36,7 +37,7 @@ export function ComboCard({
             variant === "wide" ? "sm:w-2/5 h-44 sm:h-auto" : "h-40 sm:h-44",
           )}
         >
-          <img
+          <SafeImage
             src={combo.imageUrl}
             alt={combo.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

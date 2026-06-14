@@ -23,6 +23,7 @@ import { PickupTimeSelect } from "@/components/checkout/PickupTimeSelect";
 import { getPickupSlots } from "@/lib/pickup-slots";
 import { scrollToElement } from "@/hooks/use-scroll-to-top";
 import { buildOrderNotes } from "@/lib/cart-order-notes";
+import { LegalConsentCheckbox } from "@/components/LegalConsentCheckbox";
 
 export default function Checkout() {
   const { items, combos, clearCart } = useCart();
@@ -40,6 +41,7 @@ export default function Checkout() {
     holder: "",
   });
   const [pickupAt, setPickupAt] = useState("");
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [form, setForm] = useState({
     address: "",
     comment: "",
@@ -262,8 +264,15 @@ export default function Checkout() {
               deliveryType={deliveryType}
             />
 
+            <LegalConsentCheckbox
+              checked={acceptedLegal}
+              onCheckedChange={setAcceptedLegal}
+              id="checkout-legal"
+            />
+
             <Button
               className="w-full h-12 font-bold rounded-2xl"
+              disabled={!acceptedLegal}
               onClick={() => {
                 if (deliveryType === "DELIVERY" && !form.address.trim()) {
                   toast.error("Укажите адрес доставки");

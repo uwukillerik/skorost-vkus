@@ -7,6 +7,7 @@ import { validateBody } from "../middleware/validate";
 import { optionalAuth, requireAuth } from "../middleware/auth";
 import { serializeOrder } from "../lib/serializers";
 import { calcDeliveryFee } from "../lib/delivery";
+import { isValidPhone, formatPhoneForStorage, PHONE_ERROR } from "../../shared/phone";
 
 const router = Router();
 
@@ -29,9 +30,16 @@ const createOrderSchema = z
     deliveryType: z.enum(["DELIVERY", "PICKUP"]).default("DELIVERY"),
     pickupAt: z.string().datetime().optional(),
     paymentMethod: z.enum(["CARD", "SBP", "CASH"]),
-    guestName: z.string().min(2).optional(),
-    guestPhone: z.string().min(10).optional(),
-    guestEmail: z.string().email().optional().or(z.literal("")),
+    guestName: z.string().min(2, "Имя: минимум 2 символа").optional(),
+    guestPhone: z
+      .string()
+      .optional()
+      .refine((val) => !val || isValidPhone(val), { message: PHONE_ERROR }),
+    guestEmail: z
+      .string()
+      .email("Некорректный email")
+      .optional()
+      .or(z.literal("")),
   })
   .refine((d) => d.items.length > 0 || d.combos.length > 0, {
     message: "Добавьте товары или комбо",
@@ -167,7 +175,7 @@ router.post("/", optionalAuth, validateBody(createOrderSchema), async (req, res)
     data: {
       userId: userId || null,
       guestName: userId ? null : guestName,
-      guestPhone: userId ? null : guestPhone,
+      guestPhone: userId ? null : guestPhone ? formatPhoneForStorage(guestPhone) : null,
       guestEmail: userId ? null : guestEmail || null,
       guestAccessToken,
       address: finalAddress,

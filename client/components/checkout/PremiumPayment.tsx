@@ -33,6 +33,7 @@ interface PremiumPaymentProps {
   onPay: () => void;
   loading: boolean;
   total: number;
+  payDisabled?: boolean;
 }
 
 export function PremiumPayment({
@@ -44,6 +45,7 @@ export function PremiumPayment({
   onPay,
   loading,
   total,
+  payDisabled = false,
 }: PremiumPaymentProps) {
   const formatCard = (v: string) => {
     const d = v.replace(/\D/g, "").slice(0, 16);
@@ -224,7 +226,7 @@ export function PremiumPayment({
         size="lg"
         className="w-full h-14 text-lg font-black bg-accent hover:bg-accent/90 text-secondary shadow-lg rounded-2xl"
         onClick={onPay}
-        disabled={loading}
+        disabled={loading || payDisabled}
       >
         {loading ? (
           <>

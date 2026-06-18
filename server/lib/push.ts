@@ -2,22 +2,28 @@ import webpush from "web-push";
 
 let configured = false;
 
-function ensureVapid() {
-  if (configured) return;
+function ensureVapid(): boolean {
+  if (configured) return true;
   const publicKey = process.env.VAPID_PUBLIC_KEY;
   const privateKey = process.env.VAPID_PRIVATE_KEY;
   if (!publicKey || !privateKey) {
     console.warn(
       "[push] VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY не заданы — push отключены. Запустите: npx web-push generate-vapid-keys",
     );
-    return;
+    return false;
   }
-  webpush.setVapidDetails(
-    process.env.VAPID_SUBJECT ?? "mailto:support@skorost-vkus.ru",
-    publicKey,
-    privateKey,
-  );
-  configured = true;
+  try {
+    webpush.setVapidDetails(
+      process.env.VAPID_SUBJECT ?? "mailto:support@skorost-vkus.ru",
+      publicKey,
+      privateKey,
+    );
+    configured = true;
+    return true;
+  } catch (err) {
+    console.warn("[push] Некорректные VAPID-ключи — push отключены:", err);
+    return false;
+  }
 }
 
 export function getVapidPublicKey(): string | null {
@@ -36,8 +42,7 @@ export async function notifyOrderSubscribers(
     data?: Record<string, unknown>;
   },
 ): Promise<void> {
-  ensureVapid();
-  if (!configured) return;
+  if (!ensureVapid()) return;
 
   const { prisma } = await import("./prisma");
   const subs = await prisma.pushSubscription.findMany({

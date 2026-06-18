@@ -31,6 +31,7 @@ import {
 import { cn } from "@/lib/utils";
 import { PushNotifyBanner } from "@/components/order/PushNotifyBanner";
 import { Clock } from "lucide-react";
+import { validateCardForm } from "@shared/payment-card";
 
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
@@ -74,6 +75,13 @@ export default function OrderDetail() {
 
   const handlePay = async () => {
     if (!order?.paymentMethod) return;
+    if (order.paymentMethod === "CARD") {
+      const cardError = validateCardForm(card);
+      if (cardError) {
+        toast.error(cardError);
+        return;
+      }
+    }
     setPayLoading(true);
     try {
       const res = await api.payments.pay(

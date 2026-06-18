@@ -24,6 +24,14 @@ import { getPickupSlots } from "@/lib/pickup-slots";
 import { scrollToElement } from "@/hooks/use-scroll-to-top";
 import { buildOrderNotes } from "@/lib/cart-order-notes";
 import { LegalConsentCheckbox } from "@/components/LegalConsentCheckbox";
+import {
+  formatPhoneInput,
+  isValidPhone,
+  PHONE_ERROR,
+  formatPhoneForStorage,
+} from "@shared/phone";
+import { validateCardForm } from "@shared/payment-card";
+import { cn } from "@/lib/utils";
 
 export default function Checkout() {
   const { items, combos, clearCart } = useCart();
@@ -42,6 +50,7 @@ export default function Checkout() {
   });
   const [pickupAt, setPickupAt] = useState("");
   const [acceptedLegal, setAcceptedLegal] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({
     address: "",
     comment: "",
@@ -67,6 +76,50 @@ export default function Checkout() {
     setStep(next);
   };
 
+  const validateStep1 = (): boolean => {
+    const errors: Record<string, string> = {};
+
+    if (deliveryType === "DELIVERY" && form.address.trim().length < 5) {
+      errors.address = "Укажите полный адрес доставки";
+    }
+    if (deliveryType === "PICKUP" && !pickupAt) {
+      errors.pickupAt = "Выберите время самовывоза";
+    }
+    if (!isAuthenticated) {
+      if (form.guestName.trim().length < 2) {
+        errors.guestName = "Имя: минимум 2 символа";
+      }
+      if (!form.guestPhone.trim()) {
+        errors.guestPhone = "Укажите телефон";
+      } else if (!isValidPhone(form.guestPhone)) {
+        errors.guestPhone = PHONE_ERROR;
+      }
+    }
+
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      const first = Object.values(errors)[0];
+      toast.error(first);
+      return false;
+    }
+    return true;
+  };
+
+  const validateBeforePay = (): boolean => {
+    if (!acceptedLegal) {
+      toast.error("Подтвердите согласие с документами");
+      return false;
+    }
+    if (paymentMethod === "CARD") {
+      const cardError = validateCardForm(card);
+      if (cardError) {
+        toast.error(cardError);
+        return false;
+      }
+    }
+    return true;
+  };
+
   if (items.length === 0 && combos.length === 0 && step < 3) {
     return (
       <Layout>
@@ -79,6 +132,8 @@ export default function Checkout() {
   }
 
   const handleCreateAndPay = async () => {
+    if (!validateBeforePay()) return;
+
     setLoading(true);
     try {
       const res = await api.orders.create({
@@ -98,8 +153,8 @@ export default function Checkout() {
         paymentMethod,
         ...(!isAuthenticated
           ? {
-              guestName: form.guestName,
-              guestPhone: form.guestPhone,
+              guestName: form.guestName.trim(),
+              guestPhone: formatPhoneForStorage(form.guestPhone),
               guestEmail: form.guestEmail || undefined,
             }
           : {}),
@@ -208,21 +263,53 @@ export default function Checkout() {
                       <Label>Имя *</Label>
                       <Input
                         value={form.guestName}
-                        onChange={(e) =>
-                          setForm({ ...form, guestName: e.target.value })
-                        }
+                        onChange={(e) => {
+                          setForm({ ...form, guestName: e.target.value });
+                          if (fieldErrors.guestName) {
+                            setFieldErrors((prev) => {
+                              const next = { ...prev };
+                              delete next.guestName;
+                              return next;
+                            });
+                          }
+                        }}
+                        className={cn(fieldErrors.guestName && "border-destructive")}
                         required
                       />
+                      {fieldErrors.guestName && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.guestName}</p>
+                      )}
                     </div>
                     <div>
                       <Label>Телефон *</Label>
                       <Input
                         value={form.guestPhone}
-                        onChange={(e) =>
-                          setForm({ ...form, guestPhone: e.target.value })
-                        }
+                        onChange={(e) => {
+                          setForm({
+                            ...form,
+                            guestPhone: formatPhoneInput(e.target.value),
+                          });
+                          if (fieldErrors.guestPhone) {
+                            setFieldErrors((prev) => {
+                              const next = { ...prev };
+                              delete next.guestPhone;
+                              return next;
+                            });
+                          }
+                        }}
+                        type="tel"
+                        inputMode="tel"
+                        placeholder="+7 (999) 123-45-67"
+                        className={cn(fieldErrors.guestPhone && "border-destructive")}
                         required
                       />
+                      {fieldErrors.guestPhone ? (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.guestPhone}</p>
+                      ) : (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Минимум 10 цифр — для связи по заказу
+                        </p>
+                      )}
                     </div>
                   </>
                 )}
@@ -231,12 +318,23 @@ export default function Checkout() {
                     <Label>Адрес доставки *</Label>
                     <Input
                       value={form.address}
-                      onChange={(e) =>
-                        setForm({ ...form, address: e.target.value })
-                      }
+                      onChange={(e) => {
+                        setForm({ ...form, address: e.target.value });
+                        if (fieldErrors.address) {
+                          setFieldErrors((prev) => {
+                            const next = { ...prev };
+                            delete next.address;
+                            return next;
+                          });
+                        }
+                      }}
+                      className={cn(fieldErrors.address && "border-destructive")}
                       required
                       placeholder="ул. Ленина, 10, кв. 5"
                     />
+                    {fieldErrors.address && (
+                      <p className="text-xs text-destructive mt-1">{fieldErrors.address}</p>
+                    )}
                   </div>
                 )}
                 {deliveryType === "PICKUP" && (
@@ -264,32 +362,10 @@ export default function Checkout() {
               deliveryType={deliveryType}
             />
 
-            <LegalConsentCheckbox
-              checked={acceptedLegal}
-              onCheckedChange={setAcceptedLegal}
-              id="checkout-legal"
-            />
-
             <Button
               className="w-full h-12 font-bold rounded-2xl"
-              disabled={!acceptedLegal}
               onClick={() => {
-                if (deliveryType === "DELIVERY" && !form.address.trim()) {
-                  toast.error("Укажите адрес доставки");
-                  return;
-                }
-                if (deliveryType === "PICKUP" && !pickupAt) {
-                  toast.error("Выберите время самовывоза");
-                  return;
-                }
-                if (
-                  !isAuthenticated &&
-                  (!form.guestName || !form.guestPhone)
-                ) {
-                  toast.error("Укажите имя и телефон");
-                  return;
-                }
-                goToStep(2);
+                if (validateStep1()) goToStep(2);
               }}
             >
               Далее к оплате · {total}₽
@@ -311,6 +387,12 @@ export default function Checkout() {
                 </span>
                 Оплата
               </h2>
+              <LegalConsentCheckbox
+                checked={acceptedLegal}
+                onCheckedChange={setAcceptedLegal}
+                id="checkout-legal"
+                className="mb-4"
+              />
               <PremiumPayment
                 method={paymentMethod}
                 onMethodChange={setPaymentMethod}
@@ -319,6 +401,7 @@ export default function Checkout() {
                 onPay={handleCreateAndPay}
                 loading={loading}
                 total={total}
+                payDisabled={!acceptedLegal}
               />
             </div>
             <Button variant="ghost" className="w-full" onClick={() => goToStep(1)}>
